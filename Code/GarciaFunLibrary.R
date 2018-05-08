@@ -834,8 +834,10 @@ calcMRE <- function(HRJ, ESC, fisheryinfotable, stknum, mre_startage="guess", er
    cy_nagesMRE = cy_nagesMRE[names(cy_nagesMRE)%in%names(MRE)]
   #Combine the intermediate calcs
    henry_block1 = cbind(PreterminalSurv, MatureTermRun, Escapement, CumSurvival, PotentialEscapement, by_nages)
-   colnames(henry_block1) = c("PretermSurv_Age2","PretermSurv_Age3","PretermSurv_Age4","PretermSurv_Age5","PretermSurv_Age6","TermRun_Age2","TermRun_Age3","TermRun_Age4","TermRun_Age5","TermRun_Age6","Escap_Age2","Escap_Age3","Escap_Age4","Escap_Age5","Escap_Age6","CumPretermSurv_Age2","CumPretermSurv_Age3","CumPretermSurv_Age4","CumPretermSurv_Age5","CumPretermSurv_Age6","PotEscap_Age2","PotEscap_Age3","PotEscap_Age4","PotEscap_Age5","PotEscap_Age6","by_nages")
-  #Combine the final calcs
+   #temp comment out
+   #colnames(henry_block1) = c("PretermSurv_Age2","PretermSurv_Age3","PretermSurv_Age4","PretermSurv_Age5","PretermSurv_Age6","TermRun_Age2","TermRun_Age3","TermRun_Age4","TermRun_Age5","TermRun_Age6","Escap_Age2","Escap_Age3","Escap_Age4","Escap_Age5","Escap_Age6","CumPretermSurv_Age2","CumPretermSurv_Age3","CumPretermSurv_Age4","CumPretermSurv_Age5","CumPretermSurv_Age6","PotEscap_Age2","PotEscap_Age3","PotEscap_Age4","PotEscap_Age5","PotEscap_Age6","by_nages")
+
+   #Combine the final calcs
    henry_block2 = cbind(CumPotentialEscapement, CumObsEscapement, MRE, cy_nagesMRE, valid_mre)
   #------#
   #Output
@@ -1237,13 +1239,16 @@ MRE2Plot <- function(esc, mre, smap, stknames, mrecriteria, auxdata=NULL) {
   if(!is.null(auxdata)) mre2 = rbind(mre2,.convertAuxMREMatrix(auxdata))
 
  #SUBSET mre data to only the year's of interest
-  mre2 = subset(mre2, cy%in%1975:2017)
+  mre2 = subset(mre2, cy%in%1979:2017)  #RLP NOTE 5/8/2018, this needs to be better coded!!! (error in worked example)
   mre3 = list()
   for(i in 1:nrow(smap)) {
    escaptemp=subset(Escap4, StockNum==i)
    mretemp  =subset(mre2, ERIS_Name==as.character(escaptemp$ERIS[1]))
    #re-order the columns in mretemp to match escaptemp
    mretemp  =mretemp[match(escaptemp$Year, mretemp$cy),]
+   #
+   mretemp$cy = escaptemp$Year #temporary fix on 5/8/2018
+   #
    if(!all(escaptemp$Year==mretemp$cy)) cat("WARNING!: year mismatch between MRE and Escapement data for stock:", i, "\n")
    mre3[[i]] = cbind(escaptemp, Rate=mretemp$MRE)
   }

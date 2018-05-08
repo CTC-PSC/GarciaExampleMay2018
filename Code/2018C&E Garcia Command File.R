@@ -11,12 +11,13 @@
 # HRT Data                #
 # 2018ERA HRJ DATA        #
 ###########################
+ setwd(choose.dir())
  load("Data/2018ERA MRE Data.Rdata")
 
-################
-# CYER TESTING #
-# DIFF OPTIONS #
-################
+#################
+# CYER FUNCTION #
+# DIFF OPTIONS  #
+#################
   stkloc = grep("SRH",z.cy$stknames)
 
   cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="addtoesc", ages=c(2,4:5))
@@ -38,17 +39,17 @@
   summary(SRH)
  #Nehalem
   z.cy = externalHRadjustment(z.cy, hrt=hrt.nehalem, hrjstk="SRH", type=c("tm"), newstkname="nehalem")
-  Nehalem=cyer(hrj=subset(z.cy$HRJ_P,stock==58), esc=subset(z.cy$ESC_CY,stock==58), fmap=flookup, type="AEQTot", strays="separate")
+  Nehalem=cyer(hrj=subset(z.cy$HRJ_P,stock==57), esc=subset(z.cy$ESC_CY,stock==57), fmap=flookup, type="AEQTot", strays="separate")
   Nehalem
   summary(Nehalem)
  #Siletz
   z.cy = externalHRadjustment(z.cy, hrt=hrt.siletz, hrjstk="SRH", type=c("tm"), newstkname="siletz")
-  Siletz=cyer(hrj=subset(z.cy$HRJ_P,stock==59), esc=subset(z.cy$ESC_CY,stock==59), fmap=flookup, type="AEQTot", strays="separate")
+  Siletz=cyer(hrj=subset(z.cy$HRJ_P,stock==58), esc=subset(z.cy$ESC_CY,stock==58), fmap=flookup, type="AEQTot", strays="separate")
   Siletz
   summary(Siletz)
  #Siuslaw
   z.cy = externalHRadjustment(z.cy, hrt=hrt.siuslaw, hrjstk="SRH", type=c("tm"), newstkname="siuslaw")
-  Siuslaw = cyer(hrj=subset(z.cy$HRJ_P,stock==60), esc=subset(z.cy$ESC_CY,stock==60), fmap=flookup, type="AEQTot", strays="separate")
+  Siuslaw = cyer(hrj=subset(z.cy$HRJ_P,stock==59), esc=subset(z.cy$ESC_CY,stock==59), fmap=flookup, type="AEQTot", strays="separate")
   Siuslaw
   summary(Siuslaw)
  #Generic stock CYER

@@ -1,8 +1,9 @@
 ---
-title: "Garcia Program Description"
+title: "MRE and CYER Program Description"
 author: "Randy Peterson"
 date: "May 8, 2018"
 output: beamer_presentation
+
 ---
 
 ```{r setup, include=FALSE}
@@ -10,46 +11,72 @@ knitr::opts_knit$set(root.dir = "C:/zWork/ctc-psc/GarciaExampleMay2018/") #set r
 library(knitr)
 ```
 
-## What you will learn in this presentation
+```{r include=FALSE}
+slookup_orc = read.delim("Data/2018MRE_StockLookupOregonCoastSpecial.txt",header=TRUE)
+hrt.nehalem = read.delim("Data/nehalem.txt", header=TRUE)
+flookup = read.delim("Data/2018ERA_FisheryLookup.txt",header=TRUE)
+flookup$CYER <- factor(flookup$CYER, levels = c("US AABM","CAN AABM","CAN ISBM","US ISBM","OTHER"))
+AuxMRE = read.delim("Data/2018MRE_AuxiliaryData.txt",header=TRUE)
+Escap = read.table("Data/2018MRE_EscGraphsData.txt",header=TRUE)
+```
 
-- How to use github
-- How to use R
-- How to compute MRE's in R
+## What you will learn
+
+- A little about git and github
+- A little about R
 - How to compute CYER's in R
+- How to compute MRE's in R
+
+## CTC github website
+
+https://github.com/CTC-PSC
 
 ## Downloading requisite files directly from github
 
-## Downloading requisite files from github via R
+https://github.com/CTC-PSC/GarciaExampleMay2018
 
-install.packages("pkgbuild") # pkgbuild is not available (for R version 3.5.0)
-install.packages("devtools") # make sure you have the latest version from CRAN
-library(devtools) # load package
-devtools::install_github("r-lib/pkgbuild") # install updated version of pkgbuild from GitHub
-library(pkgbuild) # load package
-find_rtools() # should be TRUE, assuming you have Rtools 3.5
-devtools::install_github("eriqande/rubias")
-installed.packages()["rubias", "Version"]  # must be "0.1.0.900" in order to handle haploid data
-library(rubias)  # load package and use!
+## Downloading requisite files from github via R, first option
 
-## MRE Calculations
+library(repmis)
 
-- What you'll need
+source_data("https://raw.githubusercontent.com/CTC-PSC/GarciaExampleMay2018/master/Data/2018ERA%20MRE%20Data.Rdata")
 
-ERA output
-Fishery lookup file
-Escapement data
-Stock lookup file
-R functions
+## Downloading requisite files from github via R, second option
 
-- Options
+download.file("https://raw.githubusercontent.com/CTC-PSC/GarciaExampleMay2018/master/Data/2018ERA%20MRE%20Data.Rdata", "2018ERA MRE Data.Rdata")
 
-## Load R functions
+## Load Functions into R
+
+The first we need to do is load all of the functions. This project utilizes three 'classes' of data: 
+
+- ERA
+- CYER
+- MRE
 
 ```{r echo = TRUE}
  source("Code/GarciaFunLibrary.R")
 ```
 
-## Reading ERA output into R
+## Data inputs
+
+![Program inputs](C:/zWork/ctc-psc/GarciaExampleMay2018/Report/DataNeedsSlide.jpg)
+
+## Read HRJ Functions
+
+```{r  eval=FALSE}
+readHRJdir <- function(userDir=choose.dir(), ...)
+convertHRJ_BYtoCY(x)
+convertHRJ_RtoAccess(x, writeCSV=FALSE, userDir=NULL)
+addPTableHRJ(x, hrjclass=c("R","Access"))
+```
+
+Where "..." are values passed onto the function readHRJ:
+
+ - nFisheries=69
+ - straysinescap=TRUE
+ - Age6=c("DNE","ignore","include")
+
+## Read ERA output into R
 
 ```{r echo = TRUE}
  #Read in HRJ files in a directory
@@ -63,30 +90,177 @@ R functions
   z.cy = addPTableHRJ(x=z.cy, hrjclass = "Access")
 ```
 
-## readHRJdir()
-```{r  results = "hide"}
-readHRJdir(userDir="Data/", nFisheries=79, 
-                straysinescap=TRUE, Age6="include")
+## Load ERA Fishery Definitions into R
+
+```{r echo=FALSE}
+kable(flookup)
 ```
 
-## convertHRJ_BYtoCY()
-```{r  results = "hide"}
-convertHRJ_BYtoCY(x=by)
+## Load Escapement Data into R
+
+```{r echo=FALSE}
+kable(Escap)
 ```
 
-## convertHRJ_RtoAccess()
-```{r  results = "hide"}
-convertHRJ_RtoAccess(x=cy, writeCSV=FALSE, userDir=NULL)
+## Load External HR Data into R
+
+```{r echo=FALSE}
+kable(hrt.nehalem)
 ```
 
-## convertHRJ_RtoAccess()
-```{r  results = "hide"}
-addPTableHRJ(x=z.cy, hrjclass = "Access")
+## Load Externally Computed MRE Data into R
+
+```{r echo=FALSE}
+kable(AuxMRE)
 ```
 
-## Slide with Plot
+## Load EIS Definitions into R
 
-```{r pressure}
-plot(pressure)
+```{r echo=FALSE}
+kable(slookup_orc)
 ```
 
+## Relationships between input files
+
+- EIS Definition File specifies which ERIS to reference by *NAME*
+
+- External MRE Estimates are referenced by the EIS Definition File by *NAME*
+
+- External HR file references ERA fishery to modify by *NUMBER*
+
+## CYER computation flow
+
+![](C:/zWork/ctc-psc/GarciaExampleMay2018/Report/CYERStepByStep.jpg)
+
+## CYER Functions
+
+```{r  eval=FALSE}
+cyer(hrj, esc, fmap, type=c("AEQCat","AEQTot","NomCat","NomTot"), strays=c("addtoesc","ignore","separate"), ages=2:6)
+print.CYER(x, digits=1, type="percent", prop=FALSE, yearstoshow=1979:2017, criteria="levels")
+summary.CYER(x, yearranges=list(1979:1984,1985:1995,1996:1998,1999:2008,2009:2017))
+print.summary.CYER(x, digits=1, type="percent", prop=FALSE)
+```
+
+## Finding your stock
+
+```{r}
+ #stock List
+ z.cy$stknames
+```
+
+## CYER Example: LYF (1/4)
+
+Print command
+
+```{r}
+  cyer(hrj=subset(z.cy$HRJ_P,stock==1), esc=subset(z.cy$ESC_CY,stock==1), fmap=flookup, type="AEQTot", strays="separate", ages=2:6)
+```
+
+## CYER Example: LYF (2/4)
+
+Summary command
+
+```{r}
+  summary(cyer(hrj=subset(z.cy$HRJ_P,stock==1), esc=subset(z.cy$ESC_CY,stock==1), fmap=flookup, type="AEQTot", strays="separate", ages=2:6))
+```
+
+## CYER Example: LYF (3/4)
+
+Print command
+
+```{r}
+  cyer(hrj=subset(z.cy$HRJ_P,stock==1), esc=subset(z.cy$ESC_CY,stock==1), fmap=flookup, type="AEQTot", strays="separate", ages=3:4)
+```
+
+## CYER Example: LYF (4/4)
+
+Summary command
+
+```{r}
+  summary(cyer(hrj=subset(z.cy$HRJ_P,stock==1), esc=subset(z.cy$ESC_CY,stock==1), fmap=flookup, type="AEQTot", strays="separate", ages=3:4))
+```
+
+## CYER Example: SRH
+```{r eval=TRUE}
+summary(cyer(hrj=subset(z.cy$HRJ_P,stock==2), 
+esc=subset(z.cy$ESC_CY,stock==2), 
+fmap=flookup, 
+type="AEQTot", 
+strays="separate", 
+ages=2:6))
+```
+
+## CYER Example: Nehalem
+```{r eval=FALSE}
+externalHRadjustment(x, hrt, hrjstk, type=c("tm","lc"), newstkname=NULL)
+```
+
+```{r eval=TRUE}
+#apply external hr adjustment
+z.cy = externalHRadjustment(z.cy, hrt=hrt.nehalem, hrjstk="SRH", type=c("tm"), newstkname="nehalem")
+#look at what we did
+z.cy$stknames
+```
+
+```{r eval=TRUE}
+  summary(cyer(hrj=subset(z.cy$HRJ_P,stock==3), esc=subset(z.cy$ESC_CY,stock==3), fmap=flookup, type="AEQTot", strays="separate", ages=2:6))
+```
+
+## MRE computation flow
+
+![](C:/zWork/ctc-psc/GarciaExampleMay2018/Report/MREStepByStep.jpg)
+
+## MRE Functions
+
+```{r  eval=FALSE}
+calcMRE(HRJ, ESC, fisheryinfotable, stknum, mre_startage="guess", eris_startage="guess")
+calcMREAll <- function(HRJ, ESC, fisheryinfotable, mre_startage="guess", eris_startage="guess")
+MRE2Plot(esc, mre, smap, stknames, mrecriteria, auxdata=NULL)
+plotGarciaAll(Garcia, outdir, outtype, pdffilename = NULL)
+plotGarcia(Garcia)
+MRE2Excel(x, stknames, filename="mre calcs.xlsx")
+```
+
+## MRE Calcs Step 1, Data Manipulation
+
+```{r  eval=TRUE}
+  HRJ=convertHRJtoMRE(z.cy$HRJ_P , datatype="fishery")
+  ESC=convertHRJtoMRE(z.cy$ESC_CY, datatype="escapement")
+```
+
+## MRE Calcs Step 2, Compute MREs
+
+```{r  eval=TRUE}
+  MRE=calcMREAll(HRJ=HRJ, ESC=ESC, fisheryinfotable=flookup, "guess", "guess")
+```
+
+## MRE Calcs Step 3, Create Plot File
+
+```{r  eval=TRUE}
+  garciaplotdata=MRE2Plot(esc=Escap, 
+                          mre=MRE, 
+                          smap=slookup_orc[1:2,], 
+                          stknames=z.cy$stknames, 
+                          mrecriteria=TRUE, 
+                          auxdata=NULL)
+```
+
+```{r }
+  head(garciaplotdata)
+```
+
+## MRE Calcs Step 4, Plot! Nehalem::SRH
+
+```{r  eval=TRUE}
+plotGarcia(subset(garciaplotdata,StockNum==1))
+```
+
+## MRE Calcs Step 4, Plot! Nehalem::SRH w/Term HR Adjustment
+
+```{r  eval=TRUE}
+plotGarcia(subset(garciaplotdata,StockNum==2))
+```
+
+## Diagnostics
+
+- MRE2Excel
