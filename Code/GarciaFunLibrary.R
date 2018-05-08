@@ -316,6 +316,8 @@ addPTableHRJ <- function(x, hrjclass=c("R","Access")) {
 # an HRJ object
 ###########################################
 readHRJdir <- function(userDir=choose.dir(), ...) {
+#Get old dir
+ odir = getwd()
 #Set directory
  setwd(userDir)
 #Find all HRJs in the user-specified directory 
@@ -372,6 +374,8 @@ readHRJdir <- function(userDir=choose.dir(), ...) {
  hrjList$nstocks = length(unique(stkList))
  hrjList$nfisheries = length(hrjList$fshnames)
  hrjList$HRJformat = "brood"
+#Reset directory
+ setwd(odir)
 #Return HRJ object
  return(hrjList)
 }
@@ -1206,7 +1210,7 @@ cyerAll <- function(x, hrj, esc, fmap, type=c("AEQCat","AEQTot","NomCat","NomTot
 # ------------------
 # 
 ###########################################
-MRE2Plot <- function(esc, mre, smap, stknames, mrecriteria) {
+MRE2Plot <- function(esc, mre, smap, stknames, mrecriteria, auxdata=NULL) {
  #
   Escap2 = pivotMatrix(esc, 1:3, 4:ncol(esc))
   names(Escap2)[4:5] = c("EISStock","Escapement")
@@ -1228,6 +1232,9 @@ MRE2Plot <- function(esc, mre, smap, stknames, mrecriteria) {
   #criteria 2 - remove MRE calcs that have n years worth of data (current criteria, set to remove calcs based on only a single age of return data)
    mre2$MRE=ifelse(mre2$cy_nagesMRE<2,NA,mre2$MRE)
   }
+
+ #Append AUX DATA
+  if(!is.null(auxdata)) mre2 = rbind(mre2,.convertAuxMREMatrix(auxdata))
 
  #SUBSET mre data to only the year's of interest
   mre2 = subset(mre2, cy%in%1975:2017)
@@ -1276,3 +1283,165 @@ MRE2Excel <- function(x, stknames, filename="mre calcs.xlsx") {
  #returns nothing
 }
 
+###########################################
+# plotGarcia
+#
+# Description
+# ------------------
+# Adapted plot all stock code by Pete McHugh
+# 
+#
+# Argument(s)
+# ------------------
+# garcia
+# outdir
+# outtype - either "pdf" or "tff"
+# Output(s)
+# ------------------
+# 
+###########################################
+plotGarcia <- function(Garcia) {
+
+# set some general specs relevant to all plots ##
+# Periods for coloring points
+per1=as.character(levels(Garcia$Period)[1])
+per2=as.character(levels(Garcia$Period)[2])
+per3=as.character(levels(Garcia$Period)[3])
+per4=as.character(levels(Garcia$Period)[4])
+# The options for x-axis labeling (MRE ER vs. CY ER) and values to display
+Xnames<-c("Mature-run equivalent exploitation rate (%)","Calendar year harvest rate (%)")
+xticks<-c("0%","20%","40%","60%","80%","100%")
+
+# Now subset data, set specs, and make figures
+  subGarc=Garcia
+
+  # Set stock(plot)-specific specs (i.e., the plotting 
+  # range and y tick width ); also, do data manipulations
+  # idea here is to make figure scale/display vary for
+  # optimal display across a wide range of escapements
+  m1<-max(subGarc$Escapement,na.rm=TRUE)
+  yt1<-c("Spawning escapement (thousands)","Spawning escapement") # use different title, if /1K vs. not
+  ytitle<-yt1[2] #raw values as default, /1K otherwise 
+  ydat<-subGarc$Escapement #raw values as default, /1K otherwise
+  sname<-as.character(subGarc$Sheetname[1]) #stock (from old excel worksheet name) for fig naming
+  fname<-paste(sname,".tif",sep="")
+  SmsyRef<-subGarc$Smsy[1]
+  S85Ref<-subGarc$S85[1]
+  if(m1>=250000){
+    ymax<-roundUp(m1,50000)/1000
+    ystep<-50000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
+  } else if (m1>=100000) {
+    ymax<-roundUp(m1,25000)/1000
+    ystep<-25000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
+  } else if (m1>=50000) {
+    ymax<-roundUp(m1,10000)/1000
+    ystep<-10000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
+  } else if (m1>=10000) {
+    ymax<-roundUp(m1,5000)/1000
+    ystep<-5000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
+  } else if(m1>=5000) {
+    ymax<-roundUp(m1,1000)
+    ystep<-1000
+  } else if(m1>=1000) {
+    ymax<-roundUp(m1,500)
+    ystep<-500
+  } else {
+    ymax<-roundUp(m1,100)
+    ystep<-100
+  }
+  # Now actually plot them (write to file)
+    # plot data and points 
+    par(mfrow=c(1,1), mar=c(4,5,0.5,1), oma=c(8,2,1,3),cex=1) #plot region specs
+    plot(subGarc$Rate,ydat, #just an empty figure region initially
+         pch="",xlab=Xnames[subGarc$RateType[1]],
+         ylim=c(0,ymax),
+         yaxs="i",xaxs="i",
+         ylab=ytitle,xlim=c(0,1),cex.axis=1.4,cex.lab=1.8,
+         font.lab=2,xaxt="n",yaxt="n")
+    abline(h=SmsyRef,lty=1,lwd=5) #Smsy ref line
+    abline(v=subGarc$Umsy[1],lty=1,lwd=5,col="darkgray") #Umsy ref line
+    dashedRefx<-seq(from=-.25,to=subGarc$Umsy[1],by=0.01) #0.85*Smsy ref part1
+    dashedRefy<-rep(S85Ref,length(dashedRefx)) #0.85*Smsy ref part2
+    lines(dashedRefx,dashedRefy,lty="dotted",lwd=5,col="darkgray") #Add 0.85*Smsy line
+    axis(2,seq(0,ymax,ystep),cex.axis=1.4) #pretty y axis
+    axis(1,seq(0,1,0.2),xticks,cex.axis=1.4) #pretty x axis
+    #now add x,y points, color-type coded for each period
+    points(subGarc$Rate[as.character(subGarc$Period)==per1],ydat[as.character(subGarc$Period)==per1],
+           pch=21,bg="white",cex=3.2) #1975-84
+    points(subGarc$Rate[as.character(subGarc$Period)==per2],ydat[as.character(subGarc$Period)==per2],
+           pch=22,bg="chartreuse4",cex=3.2) #1985-1998
+    points(subGarc$Rate[as.character(subGarc$Period)==per3],ydat[as.character(subGarc$Period)==per3],
+           pch=24,bg="royalblue",cex=3) #1999-2008
+    points(subGarc$Rate[as.character(subGarc$Period)==per4],ydat[as.character(subGarc$Period)==per4],
+           pch=21,bg="orange",cex=3.2) #2009-present
+    box(lwd=2) #add thick frame to plot region
+    
+    # make the legend (it's actually pretty complicated to get this right); the whole code chunk
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(5, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    leg.lab<-c(per1,per2,per3,per4)
+    leg.pch<-c(21,22,24,21)
+    leg.cex<-c(3.2,3.2,3,3.2)
+    leg.bg<-c("white","chartreuse4","royalblue","orange")
+    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,bty="n",cex=1.4,ncol=4)
+    leg.lab<-c("S (0.85 Smsy)","Umsy","Smsy")
+    leg.lty<-c(3,1,1)
+    leg.col<-c("darkgray","darkgray","black")
+    leg.cex<-c(rep(4,3))#3))
+
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 17, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend("bottom",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.25,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 22, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend(x="bottom",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.25,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 37, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.25,ncol=4)
+
+}
+
+###########################################
+# .convertAuxMREMatrix
+#
+# Description
+# ------------------
+# converts aux data into a format that can be appended to the mre final calc data frame
+# 
+#
+# Argument(s)
+# ------------------
+# x - input matrix of auxiliary mre calcs in the layout of
+#     * column 1 year, 
+#     * column 2:n mre calcs by stock, 
+#     * column name is numeric, corresponding to the model fishery number
+#
+# Output(s)
+# ------------------
+# out - a dataframe of the aux catch data in the layout used elsewhere
+#
+###########################################
+.convertAuxMREMatrix <- function(x) {
+	#note that the format of aux mre matrix is year, stock, and mre
+	snames = names(x)[-1] #fishery names reformatted - R adds an "X" to numeric variables
+	out = data.frame(year = rep(matrix(as.matrix(x[,1])),ncol(x)-1),
+	                 stock = matrix(sapply(snames, rep, nrow(x))),
+	                 mre = matrix(as.matrix(x[,2:ncol(x)])))
+	return(out)
+}

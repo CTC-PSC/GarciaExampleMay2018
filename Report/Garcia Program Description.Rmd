@@ -65,7 +65,7 @@ R functions
 
 ## readHRJdir()
 ```{r  results = "hide"}
-readHRJdir(userDir=getwd(), nFisheries=79, 
+readHRJdir(userDir="Data/", nFisheries=79, 
                 straysinescap=TRUE, Age6="include")
 ```
 
