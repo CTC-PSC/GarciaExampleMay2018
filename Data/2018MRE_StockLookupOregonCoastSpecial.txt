@@ -1,0 +1,7 @@
+StockNum	Stock	EIS_StockName	RateType	Smsy	S85	Umsy	ERIS	ERIS_RunTiming	ERIS_StartAge	MRE_StartAge	MRE_TermAdjustment
+1	Nehalem	Nehalem	1	6989	5940.65	0.69211812	SRH	Fall	2	3	
+2	Nehalem	Nehalem	1	6989	5940.65	0.69211812	nehalem	Fall	2	3	
+3	Siletz	Siletz	1	2944	2502.4	0.81144657	SRH	Fall	2	3	
+4	Siletz	Siletz	1	2944	2502.4	0.81144657	siletz	Fall	2	3	
+5	Siuslaw	Siuslaw	1	12925	10986.25	0.61441497	SRH	Fall	2	3	
+6	Siuslaw	Siuslaw	1	12925	10986.25	0.61441497	siuslaw	Fall	2	3	

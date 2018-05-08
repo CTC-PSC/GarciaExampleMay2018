@@ -1,0 +1,80 @@
+FisheryNumber	FisheryName	Gear	Term_PreTerm	Jurisdiction	Region	PSTFisheryType	Cohort_Type	CYER
+1	AK W/S T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+2	AK JNO T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+3	AK JNI T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+4	AK JLO T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+5	AK JLI T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+6	AK FALL T	Troll	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+7	TAK TERM T	Troll	Term	SEAK	SEAK	Terminal	Term	OTHER
+8	NORTH T	Troll	Preterm	Canada	NBC	AABM	Ocean	CAN AABM
+9	CENTRL T	Troll	Preterm	Canada	CBC	ISBM	Ocean	CAN ISBM
+10	WCVI F/W T	Troll	Preterm	Canada	WCVI	AABM	Ocean	CAN AABM
+11	WCVI SPR T	Troll	Preterm	Canada	WCVI	AABM	Ocean	CAN AABM
+12	WCVI SUM T	Troll	Preterm	Canada	WCVI	AABM	Ocean	CAN AABM
+13	N FALCON T	Troll	Preterm	SUS	N Falcon	ISBM	Ocean	US ISBM
+14	S FALCON T	Troll	Preterm	SUS	S Falcon	ISBM	Ocean	US ISBM
+15	TOR TERM T	Troll	Term	SUS	Oregon	Terminal	Term	US ISBM
+16	GEO ST T	Troll	Preterm	Canada	ECVI	ISBM	Ocean	CAN ISBM
+17	ALASKA N	Net	Term	SEAK	SEAK	AABM	OceanNet	US AABM
+18	NORTH N	Net	Term	Canada	NBC	ISBM	OceanNet	CAN ISBM
+19	TNBC TERM N	Net	Term	Canada	NBC	ISBM	Term	CAN ISBM
+20	CENTRL N	Net	Term	Canada	CBC	ISBM	OceanNet	CAN ISBM
+21	TCBC TERM N	Net	Term	Canada	CBC	ISBM	Term	CAN ISBM
+22	TWCVI TERM N	Net	Term	Canada	WCVI	ISBM	Term	CAN ISBM
+23	WCVI N	Net	Term	Canada	WCVI	ISBM	OceanNet	CAN ISBM
+24	GEO ST N	Net	Term	Canada	ECVI	ISBM	OceanNet	CAN ISBM
+25	PGSDN N	Net	Term	SUS	Puget Sound	ISBM	OceanNet	US ISBM
+26	TPGSDN TERM N	Net	Term	SUS	Puget Sound	ISBM	Term	US ISBM
+27	US JF N	Net	Term	SUS	Puget Sound	ISBM	OceanNet	US ISBM
+28	PGSDO N	Net	Term	SUS	Puget Sound	ISBM	OceanNet	US ISBM
+29	TPGSDO TERM N	Net	Term	SUS	Puget Sound	ISBM	Term	US ISBM
+30	WA CST N	Net	Term	SUS	N Falcon	ISBM	OceanNet	US ISBM
+31	TCOL R N	Net	Term	SUS	Col R	Terminal	Term	US ISBM
+32	TAK TERM N	Net	Term	SEAK	SEAK	Terminal	Term	OTHER
+33	TBR TERM N	Net	Term	SEAK	TBR	Terminal	Term	OTHER
+34	TNORTH FN	Net	Term	Canada	NBC	Terminal	Term	CAN ISBM
+35	TCENTRAL FN	Net	Term	Canada	CBC	Terminal	Term	CAN ISBM
+36	TGEO ST FN	Net	Term	Canada	ECVI	Terminal	Term	CAN ISBM
+37	TFRAS FN	Net	Term	Canada	ECVI	Terminal	Term	CAN ISBM
+38	TPS FN	Net	Term	SUS	Puget Sound	Terminal	Term	US ISBM
+39	TWAC FN	Net	Term	SUS	SUS	Terminal	Term	US ISBM
+40	JNST N	Net	Term	Canada	ECVI	ISBM	OceanNet	CAN ISBM
+41	BC JF N	Net	Term	Canada	ECVI	ISBM	OceanNet	CAN ISBM
+42	FRASER N	Net	Term	Canada	Fraser R	ISBM	OceanNet	CAN ISBM
+43	TFRASER TERM N	Net	Term	Canada	Fraser R	ISBM	Term	CAN ISBM
+44	ALASKA S	Sport	Preterm	SEAK	SEAK	AABM	Ocean	US AABM
+45	CBC S	Sport	Preterm	Canada	CBC	ISBM	Ocean	CAN ISBM
+46	TCBC TERM S	Sport	Term	Canada	CBC	ISBM	Term	CAN ISBM
+47	NBC AABM S	Sport	Preterm	Canada	NBC	AABM	Ocean	CAN AABM
+48	NBC ISBM S	Sport	Preterm	Canada	NBC	ISBM	Ocean	CAN ISBM
+49	TNBC TERM S	Sport	Term	Canada	NBC	ISBM	Term	CAN ISBM
+50	WCVI AABM S	Sport	Preterm	Canada	WCVI	AABM	Ocean	CAN AABM
+51	WCVI ISBM S	Sport	Preterm	Canada	WCVI	ISBM	Ocean	CAN ISBM
+52	TWCVI TERM S	Sport	Term	Canada	WCVI	ISBM	Term	CAN ISBM
+53	N FALCON S	Sport	Preterm	SUS	N Falcon	ISBM	Ocean	US ISBM
+54	TNF TERM S	Sport	Term	SUS	N Falcon	ISBM	Term	US ISBM
+55	S FALCON S	Sport	Preterm	SUS	S Falcon	ISBM	Ocean	US ISBM
+56	TSF TERM S	Sport	Term	SUS	S Falcon	ISBM	Term	US ISBM
+57	PGSDN S	Sport	Preterm	SUS	Puget Sound	ISBM	Ocean	US ISBM
+58	TPGSDN TERM S	Sport	Term	SUS	Puget Sound	ISBM	Term	US ISBM
+59	PGSDO S	Sport	Preterm	SUS	Puget Sound	ISBM	Ocean	US ISBM
+60	TPGSDO TERM S	Sport	Term	SUS	Puget Sound	ISBM	Term	US ISBM
+61	JNST S	Sport	Preterm	Canada	ECVI	ISBM	Ocean	CAN ISBM
+62	TJNST TERM S	Sport	Term	Canada	ECVI	ISBM	Term	CAN ISBM
+63	GEO ST S	Sport	Preterm	Canada	ECVI	ISBM	Ocean	CAN ISBM
+64	TGEO ST TERM S	Sport	Term	Canada	ECVI	ISBM	Term	CAN ISBM
+65	BC JF S	Sport	Preterm	Canada	ECVI	ISBM	Ocean	CAN ISBM
+66	TBC JF TERM S	Sport	Term	Canada	ECVI	ISBM	Term	CAN ISBM
+67	TCOL R S	Sport	Term	SUS	Col R	Terminal	Term	US ISBM
+68	TAK TERM S	Sport	Term	SEAK	SEAK	Terminal	Term	OTHER
+69	TBR TERM S	Sport	Term	SEAK	TBR	Terminal	Term	OTHER
+70	TNORTH FS	Sport	Term	Canada	NBC	Terminal	Term	CAN ISBM
+71	TCENTRAL FS	Sport	Term	Canada	CBC	Terminal	Term	CAN ISBM
+72	TWCVI FS	Sport	Term	Canada	ECVI	Terminal	Term	CAN ISBM
+73	TFRASER FS	Sport	Term	Canada	ECVI	Terminal	Term	CAN ISBM
+74	TGS FS	Sport	Term	Canada	ECVI	Terminal	Term	CAN ISBM
+75	TPS FS	Sport	Term	SUS	Puget Sound	Terminal	Term	US ISBM
+76	TSF TERM FS	Sport	Term	SUS	S Falcon	Terminal	Term	US ISBM
+77	TCAN TBR N	Net	Term	Canada	NBC	Terminal	Term	OTHER
+78	XCA ESC STRAY	other	Escapement	Canada	Stray	Escapement	Escapement	ESC
+79	XUS ESC STRAY	other	Escapement	US	Stray	Escapement	Escapement	ESC

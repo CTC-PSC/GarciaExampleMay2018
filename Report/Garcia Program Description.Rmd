@@ -1,0 +1,92 @@
+---
+title: "Garcia Program Description"
+author: "Randy Peterson"
+date: "May 8, 2018"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/zWork/ctc-psc/GarciaExampleMay2018/") #set root directory
+library(knitr)
+```
+
+## What you will learn in this presentation
+
+- How to use github
+- How to use R
+- How to compute MRE's in R
+- How to compute CYER's in R
+
+## Downloading requisite files directly from github
+
+## Downloading requisite files from github via R
+
+install.packages("pkgbuild") # pkgbuild is not available (for R version 3.5.0)
+install.packages("devtools") # make sure you have the latest version from CRAN
+library(devtools) # load package
+devtools::install_github("r-lib/pkgbuild") # install updated version of pkgbuild from GitHub
+library(pkgbuild) # load package
+find_rtools() # should be TRUE, assuming you have Rtools 3.5
+devtools::install_github("eriqande/rubias")
+installed.packages()["rubias", "Version"]  # must be "0.1.0.900" in order to handle haploid data
+library(rubias)  # load package and use!
+
+## MRE Calculations
+
+- What you'll need
+
+ERA output
+Fishery lookup file
+Escapement data
+Stock lookup file
+R functions
+
+- Options
+
+## Load R functions
+
+```{r echo = TRUE}
+ source("Code/GarciaFunLibrary.R")
+```
+
+## Reading ERA output into R
+
+```{r echo = TRUE}
+ #Read in HRJ files in a directory
+  by=readHRJdir(userDir="Data/", nFisheries=79, 
+                straysinescap=TRUE, Age6="include")
+ #Convert to CY layout
+  cy=convertHRJ_BYtoCY(x=by)
+ #Convert HRJ from R to Access format
+  z.cy=convertHRJ_RtoAccess(x=cy, writeCSV=FALSE, userDir=NULL)
+ #add the 'preferred' table to the Access format
+  z.cy = addPTableHRJ(x=z.cy, hrjclass = "Access")
+```
+
+## readHRJdir()
+```{r  results = "hide"}
+readHRJdir(userDir=getwd(), nFisheries=79, 
+                straysinescap=TRUE, Age6="include")
+```
+
+## convertHRJ_BYtoCY()
+```{r  results = "hide"}
+convertHRJ_BYtoCY(x=by)
+```
+
+## convertHRJ_RtoAccess()
+```{r  results = "hide"}
+convertHRJ_RtoAccess(x=cy, writeCSV=FALSE, userDir=NULL)
+```
+
+## convertHRJ_RtoAccess()
+```{r  results = "hide"}
+addPTableHRJ(x=z.cy, hrjclass = "Access")
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
