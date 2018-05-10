@@ -660,17 +660,26 @@ for(Si in 1:max(Garcia$StockNum)){
     SmsyRef<-subGarc$Smsy[1]/1000
     S85Ref<-subGarc$S85[1]/1000
   } else if(m1>=5000) {
-    ymax<-roundUp(m1,1000)
-    ystep<-1000
+    ymax<-roundUp(m1,1000)/1000
+    ystep<-1000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
   } else if(m1>=1000) {
-    ymax<-roundUp(m1,500)
-    ystep<-500
+    ymax<-roundUp(m1,500)/1000
+    ystep<-1000/1000
+    ytitle<-yt1[1]
+    ydat<-subGarc$Escapement/1000
+    SmsyRef<-subGarc$Smsy[1]/1000
+    S85Ref<-subGarc$S85[1]/1000
   } else {
     ymax<-roundUp(m1,100)
     ystep<-100
   }
   # Now actually plot them (write to file)
-  if(outtype == "tiff") tiff(file = paste(outdir,"\\",fname,sep=""),height = 9.27, width = 12.76,units='in',res=300) # open graphics device
+  #if(outtype == "tiff") tiff(file = paste(outdir,"\\",Si," ",fname,sep=""),height = 9.27, width = 12.76,units='in',res=300) # open graphics device
+  if(outtype == "tiff") tiff(file = paste(outdir,"\\",Si," ",fname,sep=""),height = 9.27, width = 12.76,units='in',res=300,compression="jpeg") # open graphics device
     # plot data and points 
     par(mfrow=c(1,1), mar=c(4,5,0.5,1), oma=c(8,2,1,3),cex=1) #plot region specs
     plot(subGarc$Rate,ydat, #just an empty figure region initially
@@ -698,14 +707,14 @@ for(Si in 1:max(Garcia$StockNum)){
     box(lwd=2) #add thick frame to plot region
     
     # make the legend (it's actually pretty complicated to get this right); the whole code chunk
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(5, 0, 0, 0), new = TRUE)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(5.25, 0, 0, 0), new = TRUE)
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
     leg.lab<-c(per1,per2,per3,per4)
     leg.pch<-c(21,22,24,21)
     leg.cex<-c(3.2,3.2,3,3.2)
     leg.bg<-c("white","chartreuse4","royalblue","orange")
-    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,bty="n",cex=1.4,ncol=4)
-    leg.lab<-c("S (0.85 Smsy)","Umsy","Smsy")
+    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,bty="n",cex=1.6,ncol=4)
+    leg.lab<-c(expression(S~(0.85~S[MSY])),expression(U[MSY]),expression(S[MSY]))
     leg.lty<-c(3,1,1)
     leg.col<-c("darkgray","darkgray","black")
     leg.cex<-c(rep(4,3))#3))
@@ -720,15 +729,16 @@ for(Si in 1:max(Garcia$StockNum)){
      mtext(fig_text_line3, side = 1, adj=0, line=3.5) #
     }
 
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 17, 0, 0), new = TRUE)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.25, 16, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend("bottom",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.25,ncol=4)
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 22, 0, 0), new = TRUE)
+    legend("bottomleft",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.6,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.25, 30, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend(x="bottom",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.25,ncol=4)
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 37, 0, 0), new = TRUE)
+    legend(x="bottomleft",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.6,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.25, 38, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.25,ncol=4)
+    legend(x="bottomleft",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.6,ncol=4)
+
     if(outtype == "tiff") dev.off() #if tiff then close graphics device FOR EACH loop
 } #end loop over all data (for Si in 1:...)
 #----------------------------------------------------------
@@ -1019,7 +1029,18 @@ externalHRadjustment <- function(x, hrt, hrjstk, type=c("tm","lc"), newstkname=N
 # 
 ###########################################
 #cyer
-cyer <- function(hrj, esc, fmap, type=c("AEQCat","AEQTot","NomCat","NomTot"), strays=c("addtoesc","ignore","separate"), ages=2:6) {
+cyer <- function(stkname, hrjobj, fmap, type=c("AEQCat","AEQTot","NomCat","NomTot"), strays=c("addtoesc","ignore","separate"), ages=2:6) {
+#
+ stkloc = grep(stkname, hrjobj$stknames)
+ hrj=subset(hrjobj$HRJ_P,stock==stkloc)
+ esc=esc=subset(hrjobj$ESC_CY,stock==stkloc)
+ if(hrjobj$HRJformat=="calendar") yearformat="cy"
+ if(hrjobj$HRJformat=="brood") {
+    yearformat="brood"
+    names(hrj)[2] = "cy"
+    names(esc)[2] = "cy"
+ }
+
 #what to do with strays? note that the same information appears twice (both in the hrj table and the esc table)..
  #so to prevent double counting, this function will only reference the info in the esc table, so make sure the ESC stray line is 'blanked' out
   fmap[left(fmap$FisheryName,1)=="X",]$CYER=NA
@@ -1079,7 +1100,7 @@ cyer <- function(hrj, esc, fmap, type=c("AEQCat","AEQTot","NomCat","NomTot"), st
  rownames(morttab) = rownames(numer)
  for(i in 1:ncol(numer)) morttab[,i] = numer[,i]/denom 
 #
- out = list(Years = as.numeric(row.names(morttab)), Mortality = numer, PercentMortality = morttab, Recoveries = denom, AgesPresent = agespresent)
+ out = list(Years = as.numeric(row.names(morttab)), Mortality = numer, PercentMortality = morttab, Recoveries = denom, AgesPresent = agespresent, YearFormat = yearformat, ShakerMethod="P Method")
  class(out) = "CYER"
  return(out)
 }
@@ -1123,7 +1144,9 @@ print.CYER <- function(x, digits=1, type="percent", prop=FALSE, yearstoshow=1979
     criteriaout[x$Recoveries>=105 & nchar(x$AgesPresent)>3] = "ok"
   }
  }
- tmp = data.frame("CatchYear"=x$Years[whichyears], "Ages"=x$AgesPresent[whichyears], "Recoveries"=x$Recoveries[whichyears], morttoshow, criteria=criteriaout[whichyears])
+ if(x$YearFormat=="cy") tmp = data.frame(CatchYear=x$Years[whichyears], "Ages"=x$AgesPresent[whichyears], "Recoveries"=x$Recoveries[whichyears], morttoshow, criteria=criteriaout[whichyears])
+ if(x$YearFormat=="brood") tmp = data.frame(BroodYear=x$Years[whichyears], "Ages"=x$AgesPresent[whichyears], "Recoveries"=x$Recoveries[whichyears], morttoshow, criteria=criteriaout[whichyears])
+
  print(tmp,row.names=FALSE)
 }
 
@@ -1486,7 +1509,7 @@ xticks<-c("0%","20%","40%","60%","80%","100%")
 # ------------------
 # 
 ###########################################
-plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
+plotSynopticSynoptic <- function(garcia, year, outtype=NA, verbose=FALSE, filename=NA, addeistext=FALSE) {
 #Subset garcia data
  subGarc = subset(garcia, Year==year)
 #drop levels
@@ -1497,9 +1520,7 @@ plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
  per3=as.character(levels(subGarc$EIS_Region)[3]) #col r
  per4=as.character(levels(subGarc$EIS_Region)[4]) #tbr
  per5=as.character(levels(subGarc$EIS_Region)[5]) #wa/or coast
-# The options for x-axis labeling (MRE ER vs. CY ER) and values to display
- Xnames<-paste(year,"ER to Umsy Index")
- xticks<-c("0%","20%","40%","60%","80%","100%", "120%")
+
 #Compute the indices
  subGarc$EscIndex = with(subGarc, ifelse(is.na(LowerGoal),Escapement/Smsy, Escapement/LowerGoal))
  subGarc$MREIndex = with(subGarc, Rate/Umsy)
@@ -1508,21 +1529,27 @@ plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
 # idea here is to make figure scale/display vary for
 # optimal display across a wide range of escapements
   ymax<-max(subGarc$EscIndex,na.rm=TRUE)/0.95
-  ytitle<-paste(year,"Escapement to Smsy Index") #raw values as default, /1K otherwise 
+  ytitle<-expression(Escapement~to~S[MSY]~Index)
   ydat<-subGarc$EscIndex #raw values as default, /1K otherwise
   ystep = 7
-  SmsyRef<-1.2
-  S85Ref<-1
+  SmsyRef<-1
+  S85Ref<-.85
+# The options for x-axis labeling (MRE ER vs. CY ER) and values to display
+ xmax=max(1,max(subGarc$MREIndex,na.rm=TRUE)/.95)
+ Xnames<-expression(ER~to~U[MSY]~Index)
+ xticks<-paste(seq(0,xmax,by=.2)*100,"%",sep="")
+
  #Now actually plot them (write to file)
-  if(outtype == "pdf") pdf(file = paste(year," synoptic summary.pdf",sep=""),height = 9.27, width = 12.76) # open graphics device
-  if(outtype == "tiff") tiff(file = paste(year," synoptic summary.tif",sep=""),height = 9.27, width = 12.76,units='in',res=300) # open graphics device
+  if(is.na(filename)) filename=paste(year," synoptic summary",sep="")
+  if(outtype == "pdf") pdf(file = paste(filename,".pdf",sep=""),height = 9.27, width = 12.76) # open graphics device
+  if(outtype == "tiff") tiff(file = paste(filename,".tif",sep=""),height = 9.27, width = 12.76,units='in',res=300,compression="jpeg") # open graphics device
  #Plot data and points 
     par(mfrow=c(1,1), mar=c(4,5,0.5,1), oma=c(8,2,1,3),cex=1) #plot region specs
     plot(subGarc$MREIndex,ydat, #just an empty figure region initially
          pch="",xlab=Xnames,
          ylim=c(0,ymax),
          yaxs="i",xaxs="i",
-         ylab=ytitle,xlim=c(0,1.2),cex.axis=1.4,cex.lab=1.8,
+         ylab=ytitle,xlim=c(0,xmax),cex.axis=1.4,cex.lab=1.8,
          font.lab=2,xaxt="n",yaxt="n")
     abline(h=SmsyRef,lty=1,lwd=5) #Smsy ref line
     abline(v=1,lty=1,lwd=5,col="darkgray") #Umsy ref line
@@ -1530,7 +1557,7 @@ plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
     dashedRefy<-rep(S85Ref,length(dashedRefx)) #0.85*Smsy ref part2
     lines(dashedRefx,dashedRefy,lty="dotted",lwd=5,col="darkgray") #Add 0.85*Smsy line
     axis(2,cex.axis=1.4) #pretty y axis
-    axis(1,seq(0,1.2,0.2),xticks,cex.axis=1.4) #pretty x axis
+    axis(1,seq(0,xmax,0.2),xticks,cex.axis=1.4) #pretty x axis
     #now add x,y points, color-type coded for each period
     points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per1],ydat[as.character(subGarc$EIS_Region)==per1],
            pch=21,bg="white",cex=3.2) #Alaska
@@ -1543,34 +1570,35 @@ plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
     points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per5],ydat[as.character(subGarc$EIS_Region)==per5],
            pch=23,bg="red",cex=3.2) #2009-present
     box(lwd=2) #add thick frame to plot region
-    
+    #add text for each stock name if asked
+    if(addeistext) text(subGarc$MREIndex, ydat, subGarc$EISStock)
     # make the legend (it's actually pretty complicated to get this right); the whole code chunk
     par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(4, 0, 0, 0), new = TRUE)
-    plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n", xlab="", ylab="")
     leg.lab<-c(per1,per2,per3,per4,per5)
     leg.pch<-c(21,22,24,8,23)
     leg.cex<-c(3.2,3.2,3,3.2,3.2)
     leg.bg<-c("white","chartreuse4","royalblue","orange","red")
     leg.col<-c("black","black","black","orange","black")
     leg.lwd=c(1,1,1,2,1)
-    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,col=leg.col,bty="n",cex=1.4,ncol=4)
-    leg.lab<-c("S (0.85 Smsy)","Umsy","Smsy")
+    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,col=leg.col,bty="n",cex=1.5,horiz=TRUE)
+    leg.lab<-c(expression(S~(0.85~S[MSY])),expression(U[MSY]),expression(S[MSY]))
     leg.lty<-c(3,1,1)
     leg.col<-c("darkgray","darkgray","black")
     leg.cex<-c(rep(4,3))#3))
    #
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 17, 0, 0), new = TRUE)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(1.5, 17, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend("bottom",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.25,ncol=4)
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 22, 0, 0), new = TRUE)
+    legend("bottom",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.5,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(1.5, 22, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend(x="bottom",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.25,ncol=4)
-    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 37, 0, 0), new = TRUE)
+    legend(x="bottom",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.5,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(1.5, 37, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
-    legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.25,ncol=4)
+    legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.5,ncol=4)
    #
     if(outtype=="pdf" || outtype=="tiff") dev.off() #if tiff or pdf then close graphics device FOR EACH loop
-    return(subGarc)
+    if(verbose) return(subGarc)
 }
 
 

@@ -18,77 +18,76 @@
 # CYER FUNCTION #
 # DIFF OPTIONS  #
 #################
-  stkloc = grep("SRH",z.cy$stknames)
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="addtoesc", ages=c(2,4:5))
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="ignore"  , ages=c(2,4:5))
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=c(2,4:5))
 
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="addtoesc", ages=c(2,4:5))
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="ignore"  , ages=c(2,4:5))
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=c(2,4:5))
-
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="addtoesc", ages=c(2:6))
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="ignore"  , ages=c(2:6))
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=c(2:6))
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="addtoesc", ages=c(2:6))
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="ignore"  , ages=c(2:6))
+  cyer(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=c(2:6))
 
 ################################
 # Apply External HR Adjustment #
 # and Check Results            #
 ################################
-  #Nehalem
+ #Nehalem
   z.cy = externalHRadjustment(z.cy, hrt=hrt.nehalem, hrjstk="SRH", type=c("tm"), newstkname="nehalem")
-  Nehalem=cyer(hrj=subset(z.cy$HRJ_P,stock==58), esc=subset(z.cy$ESC_CY,stock==58), fmap=flookup, type="AEQTot", strays="separate")
+  Nehalem=cyer(stkname="nehalem", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   Nehalem
   summary(Nehalem)
-  #Siletz
+ #Siletz
   z.cy = externalHRadjustment(z.cy, hrt=hrt.siletz, hrjstk="SRH", type=c("tm"), newstkname="siletz")
-  Siletz=cyer(hrj=subset(z.cy$HRJ_P,stock==59), esc=subset(z.cy$ESC_CY,stock==59), fmap=flookup, type="AEQTot", strays="separate")
+  Siletz=cyer(stkname="siletz", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   Siletz
   summary(Siletz)
-  #Siuslaw
+ #Siuslaw
   z.cy = externalHRadjustment(z.cy, hrt=hrt.siuslaw, hrjstk="SRH", type=c("tm"), newstkname="siuslaw")
-  Siuslaw = cyer(hrj=subset(z.cy$HRJ_P,stock==60), esc=subset(z.cy$ESC_CY,stock==60), fmap=flookup, type="AEQTot", strays="separate")
+  Siuslaw = cyer(stkname="siuslaw", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   Siuslaw
   summary(Siuslaw)
-  #SRH
+ #SRH
   stkloc = grep("SRH",z.cy$stknames)
-  SRH = cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate")
+  SRH = cyer(hrj=subset(stkname="SRH", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   SRH
   summary(SRH)
-  #WAC SPECIAL ADJUSTMENT COMMENT !!!!!!!READ ME READ ME READ ME!!!!!!!
+ #WAC SPECIAL ADJUSTMENT COMMENT !!!!!!!READ ME READ ME READ ME!!!!!!!
   #the hrt files specify that US terminal net & sport term HR's are equal to 0. This is not a 1:1 mapping, 
   #simply meaning that the number of ERA are involved. I am not, at present, overwriting ERA results via the HRT file
   #for all ERA fisheries involved b/c there's 0 harvest in these fisheries (and hence already equal to 0). 
   #You will want to ALWAYS check and confirm this (see below code).
   hrj=subset(z.cy$HRJ_P,stock==grep("QUE",z.cy$stknames))
   with(hrj, tapply(AEQTot4, list(cy,fishery), sum))[,c(31,15,29,26,38,67,60,54,58,56,75,76)]
-  #Hoh
+ #Hoh
   z.cy = externalHRadjustment(z.cy, hrt=hrt.hoh, hrjstk="QUE", type=c("tm"), newstkname="hoh")
-  Hoh = cyer(hrj=subset(z.cy$HRJ_P,stock==61), esc=subset(z.cy$ESC_CY,stock==61), fmap=flookup, type="AEQTot", strays="separate")
+  Hoh = cyer(stkname="hoh", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   Hoh
   summary(Hoh)
-  #Quillayute
+ #Quillayute
   z.cy = externalHRadjustment(z.cy, hrt=hrt.quillayute, hrjstk="QUE", type=c("tm"), newstkname="quillayute")
-  Quillayute = cyer(hrj=subset(z.cy$HRJ_P,stock==62), esc=subset(z.cy$ESC_CY,stock==62), fmap=flookup, type="AEQTot", strays="separate")
+  Quillayute = cyer(stkname="quillayute", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   Quillayute
   summary(Quillayute)
-  #QUE
-  stkloc = grep("QUE",z.cy$stknames)
-  QUE = cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate")
+ #QUE
+  QUE = cyer(stkname="QUE", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
   QUE
   summary(QUE)
-  
+ #Generic stock CYER
+  hold=cyer(stkname="RBT", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate")
+
+
 ################
 #LYF for Larrie#
 ################
-  stkloc = grep("LYF",z.cy$stknames)
  ###############
  #ALL AGES: 2-5#
  ###############
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=2:6)
-  summary(cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=2:6))
+  cyer(stkname="LYF", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=2:6)
+  summary(cyer(stkname="LYF", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=2:6))
  ###############
  #AGES 3-4 only#
  ###############
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=3:4)
-  summary(cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate", ages=3:4))
+  cyer(stkname="LYF", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=3:4)
+  summary(cyer(stkname="LYF", hrjobj=z.cy, fmap=flookup, type="AEQTot", strays="separate", ages=3:4))
 
 #############
 # MRE CALCS #
