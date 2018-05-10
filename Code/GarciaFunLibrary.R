@@ -599,7 +599,7 @@ roundUp <- function(x,to=10)
 ###########################################
 plotGarciaAll <- function(Garcia, outdir, outtype, pdffilename = NULL) {
 #get original directory
-odir <- getwd()
+ odir <- getwd()
 #
  this_is_the_place<-outdir #set output directory for specs
 #---------------------------------------------------
@@ -619,16 +619,15 @@ xticks<-c("0%","20%","40%","60%","80%","100%")
 # Now subset data, set specs, and make figures
 for(Si in 1:max(Garcia$StockNum)){
   subGarc<-subset(Garcia,StockNum==Si) #get stock Si's data subset
-
   # Set stock(plot)-specific specs (i.e., the plotting 
   # range and y tick width ); also, do data manipulations
   # idea here is to make figure scale/display vary for
   # optimal display across a wide range of escapements
-  m1<-max(subGarc$Escapement,na.rm=TRUE)
+  m1<-max(subGarc$Escapement,na.rm=TRUE)/0.95
   yt1<-c("Spawning escapement (thousands)","Spawning escapement") # use different title, if /1K vs. not
   ytitle<-yt1[2] #raw values as default, /1K otherwise 
   ydat<-subGarc$Escapement #raw values as default, /1K otherwise
-  sname<-as.character(subGarc$Sheetname[1]) #stock (from old excel worksheet name) for fig naming
+  sname<-as.character(subGarc$EISStock[1]) #stock (from old excel worksheet name) for fig naming
   fname<-paste(sname,".tif",sep="")
   SmsyRef<-subGarc$Smsy[1]
   S85Ref<-subGarc$S85[1]
@@ -713,7 +712,7 @@ for(Si in 1:max(Garcia$StockNum)){
 
     if(outtype == "pdf") {     
      fig_text_line1 = paste("Figure ",Si,".-",Xnames[subGarc$RateType[1]],", spawning escapement, and threshold reference lines for exploitation rate and spawning escapement by CY", sep="")
-     fig_text_line2 = paste("                for the ", subGarc$Stock[1], " stock of Chinook salmon, 1979-", max(subGarc$Year,na.rm=TRUE),". Cumulative mature-run equivalent exploitation rate calculated from the ", as.character(subGarc$ERIS[1]), " CWT",sep="")
+     fig_text_line2 = paste("                for the ", subGarc$EISStock[1], " stock of Chinook salmon, 1979-", max(subGarc$Year,na.rm=TRUE),". Cumulative mature-run equivalent exploitation rate calculated from the ", as.character(subGarc$ERIS[1]), " CWT",sep="")
      fig_text_line3 = paste("                exploitation rate indicator stock.",sep="")
 
      mtext(fig_text_line1, side = 1, adj=0, line=1.5) #work in progress
@@ -730,12 +729,10 @@ for(Si in 1:max(Garcia$StockNum)){
     par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(3.5, 37, 0, 0), new = TRUE)
     plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
     legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.25,ncol=4)
-
     if(outtype == "tiff") dev.off() #if tiff then close graphics device FOR EACH loop
 } #end loop over all data (for Si in 1:...)
 #----------------------------------------------------------
     if(outtype == "pdf") dev.off() #if pdf then close graphics device at the end of ALL loops
-
 #reset to original directory
  setwd(odir)
 }
@@ -791,7 +788,8 @@ calcMRE <- function(HRJ, ESC, fisheryinfotable, stknum, mre_startage="guess", er
     #and if not all of the age 6 data is NA, then eris startage should be 5
      if(!all(is.na(Escapement[,as.numeric(colnames(Escapement))==6]))) eris_endage = 6
     #use eris_startage and eris_endage to compute the number of ages
-     eris_nages = length(eris_startage:eris_endage)
+     eris_ages = eris_startage:eris_endage
+     eris_nages = length(eris_ages)
    #Differentiate terminal and non-terminal fish in the ocean net catch (i.e. if it's ERIS start age = 2, it implies that age 4 and older fish are mature fish in the ocean net fishery)
     OcneannetTerm = OcneannetCat
     OcneannetPreterm = OcneannetCat
@@ -834,10 +832,9 @@ calcMRE <- function(HRJ, ESC, fisheryinfotable, stknum, mre_startage="guess", er
    cy_nagesMRE = cy_nagesMRE[names(cy_nagesMRE)%in%names(MRE)]
   #Combine the intermediate calcs
    henry_block1 = cbind(PreterminalSurv, MatureTermRun, Escapement, CumSurvival, PotentialEscapement, by_nages)
-   #temp comment out
-   #colnames(henry_block1) = c("PretermSurv_Age2","PretermSurv_Age3","PretermSurv_Age4","PretermSurv_Age5","PretermSurv_Age6","TermRun_Age2","TermRun_Age3","TermRun_Age4","TermRun_Age5","TermRun_Age6","Escap_Age2","Escap_Age3","Escap_Age4","Escap_Age5","Escap_Age6","CumPretermSurv_Age2","CumPretermSurv_Age3","CumPretermSurv_Age4","CumPretermSurv_Age5","CumPretermSurv_Age6","PotEscap_Age2","PotEscap_Age3","PotEscap_Age4","PotEscap_Age5","PotEscap_Age6","by_nages")
-
-   #Combine the final calcs
+   eris_ages= colnames(Escapement) #override eris_ages to what's actually present for auto-naming
+   colnames(henry_block1) = c(paste("PretermSurv_Age",eris_ages,sep=""), paste("TermRun_Age",eris_ages,sep=""),paste("Escap_Age",eris_ages,sep=""),paste("CumPretermSurv_Age",eris_ages,sep=""),paste("PotEscap_Age",eris_ages,sep=""),"by_nages")
+  #Combine the final calcs
    henry_block2 = cbind(CumPotentialEscapement, CumObsEscapement, MRE, cy_nagesMRE, valid_mre)
   #------#
   #Output
@@ -868,19 +865,31 @@ calcMREAll <- function(HRJ, ESC, fisheryinfotable, mre_startage="guess", eris_st
  IntermediateCalcs = list()
  FinalCalcs = list()
  nstks = length(unique(HRJ$stock))
- stks = unique(HRJ$stock)
+ stks = sort(unique(HRJ$stock))
  for(i in 1:nstks) {
-  stknum = stks[i]
-  cat("calc",i,"of",nstks,"for hrj stock number",stknum,"\n")
+  stkNum = stks[i]
+  cat("calc",i,"of",nstks,"for hrj stock number",stkNum,"\n")
+  #set defaults for mre and eris start age
+   mre_startage2  = "guess"
+   eris_startage2 = "guess"
   #if mre_startage is not equal to guess, should be a vector...
-
-  #if eris_startage is not equal to guess, should be a vector...
-
+   if(class(mre_startage)=="data.frame") {
+    mre_startage2 = subset(mre_startage, stknum==stkNum)$MRE_StartAge
+    #if length 0 (as in not specified)
+    if(length(mre_startage2)==0) mre_startage2="guess"
+    if(length(mre_startage2)>1) mre_startage2=mre_startage2[1]
+   }
+   if(class(eris_startage)=="data.frame") {
+    eris_startage2 = subset(eris_startage, stknum==stkNum)$ERIS_StartAge
+    #if length 0 (as in not specified)
+    if(length(eris_startage2)==0) eris_startage2="guess"
+    if(length(eris_startage2)>1) eris_startage2=eris_startage2[1]
+   }
   #mre calcs
-   tmp = calcMRE(HRJ, ESC, fisheryinfotable=fisheryinfotable, stknum=stknum, mre_startage=mre_startage, eris_startage=eris_startage)
+   tmp = calcMRE(HRJ, ESC, fisheryinfotable=fisheryinfotable, stknum=stkNum, mre_startage=mre_startage2, eris_startage=eris_startage2)
   #manipulate data
-   IntermediateCalcs[[i]] = cbind(stock=rep(stknum, nrow(tmp$IntermediateCalcs)), by=as.numeric(rownames(tmp$IntermediateCalcs)), tmp$IntermediateCalcs)
-   FinalCalcs[[i]] = cbind(stock=rep(stknum, nrow(tmp$FinalCalcs)), cy=as.numeric(rownames(tmp$FinalCalcs)), mrecalcstartage=rep(tmp$Inputs$MRECalcStartAge, nrow(tmp$FinalCalcs)), tmp$FinalCalcs)
+   IntermediateCalcs[[i]] = cbind(stock=rep(stkNum, nrow(tmp$IntermediateCalcs)), by=as.numeric(rownames(tmp$IntermediateCalcs)), tmp$IntermediateCalcs)
+   FinalCalcs[[i]] = cbind(stock=rep(stkNum, nrow(tmp$FinalCalcs)), cy=as.numeric(rownames(tmp$FinalCalcs)), mrecalcstartage=rep(tmp$Inputs$MRECalcStartAge, nrow(tmp$FinalCalcs)), tmp$FinalCalcs)
  }
  #collapse stock-specific results into a list
   out = list()
@@ -1231,24 +1240,24 @@ MRE2Plot <- function(esc, mre, smap, stknames, mrecriteria, auxdata=NULL) {
   if(mrecriteria) {
   #criteria 1 - remove MRE calcs that have ANY missing data (usually 3 years of returns)
    #mre2$MRE=ifelse(mre2$valid_mre!=TRUE,NA,mre2$MRE)
-  #criteria 2 - remove MRE calcs that have n years worth of data (current criteria, set to remove calcs based on only a single age of return data)
-   mre2$MRE=ifelse(mre2$cy_nagesMRE<2,NA,mre2$MRE)
+  #criteria 2 - remove MRE calcs that have n ages worth of data (current criteria, set to remove calcs based on only a single age of return data)
+   mre2$MRE=ifelse(mre2$cy_nagesMRE<1,NA,mre2$MRE)
   }
 
  #Append AUX DATA
   if(!is.null(auxdata)) mre2 = rbind(mre2,.convertAuxMREMatrix(auxdata))
 
- #SUBSET mre data to only the year's of interest
-  mre2 = subset(mre2, cy%in%1979:2017)  #RLP NOTE 5/8/2018, this needs to be better coded!!! (error in worked example)
+ #SUBSET mre data to only the year's of interest (i.e. year's with escapement data!)
+  mre2 = subset(mre2, cy%in%unique(Escap4$Year))
   mre3 = list()
   for(i in 1:nrow(smap)) {
    escaptemp=subset(Escap4, StockNum==i)
    mretemp  =subset(mre2, ERIS_Name==as.character(escaptemp$ERIS[1]))
    #re-order the columns in mretemp to match escaptemp
    mretemp  =mretemp[match(escaptemp$Year, mretemp$cy),]
-   #
-   mretemp$cy = escaptemp$Year #temporary fix on 5/8/2018
-   #
+   #occasionally there's less mre data than escapement data, so override the 'cy' column from the mre with the ESC 'Year' column
+   mretemp$cy = escaptemp$Year
+   #dunno if the following check is needed now given the line of code above: meh
    if(!all(escaptemp$Year==mretemp$cy)) cat("WARNING!: year mismatch between MRE and Escapement data for stock:", i, "\n")
    mre3[[i]] = cbind(escaptemp, Rate=mretemp$MRE)
   }
@@ -1276,6 +1285,7 @@ MRE2Excel <- function(x, stknames, filename="mre calcs.xlsx") {
  colnames(MRE$FinalCalcs)
  nstks = length(stknames)
  wb <- createWorkbook("MRECalcs")
+ #add the indiv stock sheets
  for(i in 1:nstks) {
   addWorksheet(wb=wb, sheetName=stknames[i])
   intercalcs = MRE$IntermediateCalcs[MRE$IntermediateCalcs[,1]==i,]
@@ -1284,6 +1294,12 @@ MRE2Excel <- function(x, stknames, filename="mre calcs.xlsx") {
   writeData(wb=wb, sheet=stknames[i], x=out2Excel[[1]], startCol=1 , borders="surrounding")
   writeData(wb=wb, sheet=stknames[i], x=out2Excel[[2]], startCol=30, borders="surrounding")
  }
+ #add the all stock sheet
+  addWorksheet(wb=wb, sheetName="all stocks")
+  writeData(wb=wb, sheet="all stocks", x=MRE$IntermediateCalcs, startCol=1 , borders="surrounding")
+  writeData(wb=wb, sheet="all stocks", x=MRE$FinalCalcs, startCol=30, borders="surrounding")
+  writeData(wb=wb, sheet="all stocks", x=data.frame(stock=1:length(stknames),stknames=stknames), startCol=39, borders="surrounding")
+ #save workbook
  saveWorkbook(wb, filename, overwrite = TRUE)
  #returns nothing
 }
@@ -1324,11 +1340,11 @@ xticks<-c("0%","20%","40%","60%","80%","100%")
   # range and y tick width ); also, do data manipulations
   # idea here is to make figure scale/display vary for
   # optimal display across a wide range of escapements
-  m1<-max(subGarc$Escapement,na.rm=TRUE)
+  m1<-max(subGarc$Escapement,na.rm=TRUE)/0.95
   yt1<-c("Spawning escapement (thousands)","Spawning escapement") # use different title, if /1K vs. not
   ytitle<-yt1[2] #raw values as default, /1K otherwise 
   ydat<-subGarc$Escapement #raw values as default, /1K otherwise
-  sname<-as.character(subGarc$Sheetname[1]) #stock (from old excel worksheet name) for fig naming
+  sname<-as.character(subGarc$EISStock[1]) #stock (from old excel worksheet name) for fig naming
   fname<-paste(sname,".tif",sep="")
   SmsyRef<-subGarc$Smsy[1]
   S85Ref<-subGarc$S85[1]
@@ -1445,8 +1461,116 @@ xticks<-c("0%","20%","40%","60%","80%","100%")
 .convertAuxMREMatrix <- function(x) {
 	#note that the format of aux mre matrix is year, stock, and mre
 	snames = names(x)[-1] #fishery names reformatted - R adds an "X" to numeric variables
-	out = data.frame(year = rep(matrix(as.matrix(x[,1])),ncol(x)-1),
-	                 stock = matrix(sapply(snames, rep, nrow(x))),
-	                 mre = matrix(as.matrix(x[,2:ncol(x)])))
+	out = data.frame(cy = rep(matrix(as.matrix(x[,1])),ncol(x)-1),
+	                 MRE = matrix(as.matrix(x[,2:ncol(x)])),
+	                 ERIS_Name = matrix(sapply(snames, rep, nrow(x))))
+      out$valid_mre   = NA
+      out$cy_nagesMRE = NA
 	return(out)
 }
+
+###########################################
+# plotSynopticSynoptic
+#
+# Description
+# ------------------
+# plots the synoptic synoptic plot
+# 
+#
+# Argument(s)
+# ------------------
+# garcia
+# outdir
+# outtype - either "pdf" or "tff" or null
+# Output(s)
+# ------------------
+# 
+###########################################
+plotSynopticSynoptic <- function(garcia, year, outtype=NA) {
+#Subset garcia data
+ subGarc = subset(garcia, Year==year)
+#drop levels
+# set some general specs relevant to all plots ##
+# Periods for coloring points
+ per1=as.character(levels(subGarc$EIS_Region)[1]) #ak
+ per2=as.character(levels(subGarc$EIS_Region)[2]) #canada
+ per3=as.character(levels(subGarc$EIS_Region)[3]) #col r
+ per4=as.character(levels(subGarc$EIS_Region)[4]) #tbr
+ per5=as.character(levels(subGarc$EIS_Region)[5]) #wa/or coast
+# The options for x-axis labeling (MRE ER vs. CY ER) and values to display
+ Xnames<-paste(year,"ER to Umsy Index")
+ xticks<-c("0%","20%","40%","60%","80%","100%", "120%")
+#Compute the indices
+ subGarc$EscIndex = with(subGarc, ifelse(is.na(LowerGoal),Escapement/Smsy, Escapement/LowerGoal))
+ subGarc$MREIndex = with(subGarc, Rate/Umsy)
+# Set stock(plot)-specific specs (i.e., the plotting 
+# range and y tick width ); also, do data manipulations
+# idea here is to make figure scale/display vary for
+# optimal display across a wide range of escapements
+  ymax<-max(subGarc$EscIndex,na.rm=TRUE)/0.95
+  ytitle<-paste(year,"Escapement to Smsy Index") #raw values as default, /1K otherwise 
+  ydat<-subGarc$EscIndex #raw values as default, /1K otherwise
+  ystep = 7
+  SmsyRef<-1.2
+  S85Ref<-1
+ #Now actually plot them (write to file)
+  if(outtype == "pdf") pdf(file = paste(year," synoptic summary.pdf",sep=""),height = 9.27, width = 12.76) # open graphics device
+  if(outtype == "tiff") tiff(file = paste(year," synoptic summary.tif",sep=""),height = 9.27, width = 12.76,units='in',res=300) # open graphics device
+ #Plot data and points 
+    par(mfrow=c(1,1), mar=c(4,5,0.5,1), oma=c(8,2,1,3),cex=1) #plot region specs
+    plot(subGarc$MREIndex,ydat, #just an empty figure region initially
+         pch="",xlab=Xnames,
+         ylim=c(0,ymax),
+         yaxs="i",xaxs="i",
+         ylab=ytitle,xlim=c(0,1.2),cex.axis=1.4,cex.lab=1.8,
+         font.lab=2,xaxt="n",yaxt="n")
+    abline(h=SmsyRef,lty=1,lwd=5) #Smsy ref line
+    abline(v=1,lty=1,lwd=5,col="darkgray") #Umsy ref line
+    dashedRefx<-seq(from=-.25,to=1,by=0.01) #0.85*Smsy ref part1
+    dashedRefy<-rep(S85Ref,length(dashedRefx)) #0.85*Smsy ref part2
+    lines(dashedRefx,dashedRefy,lty="dotted",lwd=5,col="darkgray") #Add 0.85*Smsy line
+    axis(2,cex.axis=1.4) #pretty y axis
+    axis(1,seq(0,1.2,0.2),xticks,cex.axis=1.4) #pretty x axis
+    #now add x,y points, color-type coded for each period
+    points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per1],ydat[as.character(subGarc$EIS_Region)==per1],
+           pch=21,bg="white",cex=3.2) #Alaska
+    points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per2],ydat[as.character(subGarc$EIS_Region)==per2],
+           pch=22,bg="chartreuse4",cex=3.2) #Canada
+    points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per3],ydat[as.character(subGarc$EIS_Region)==per3],
+           pch=24,bg="royalblue",cex=3) #Columbia
+    points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per4],ydat[as.character(subGarc$EIS_Region)==per4],
+           pch=8,col="orange",cex=3.2,lwd=2) #TBR
+    points(subGarc$MREIndex[as.character(subGarc$EIS_Region)==per5],ydat[as.character(subGarc$EIS_Region)==per5],
+           pch=23,bg="red",cex=3.2) #2009-present
+    box(lwd=2) #add thick frame to plot region
+    
+    # make the legend (it's actually pretty complicated to get this right); the whole code chunk
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(4, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    leg.lab<-c(per1,per2,per3,per4,per5)
+    leg.pch<-c(21,22,24,8,23)
+    leg.cex<-c(3.2,3.2,3,3.2,3.2)
+    leg.bg<-c("white","chartreuse4","royalblue","orange","red")
+    leg.col<-c("black","black","black","orange","black")
+    leg.lwd=c(1,1,1,2,1)
+    legend(x="bottom",leg.lab,pt.bg=leg.bg,pch=leg.pch,col=leg.col,bty="n",cex=1.4,ncol=4)
+    leg.lab<-c("S (0.85 Smsy)","Umsy","Smsy")
+    leg.lty<-c(3,1,1)
+    leg.col<-c("darkgray","darkgray","black")
+    leg.cex<-c(rep(4,3))#3))
+   #
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 17, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend("bottom",leg.lab[1],lty=leg.lty[1],col=leg.col[1],bty="n",xjust=0,lwd=leg.cex[1],cex=1.25,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 22, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend(x="bottom",leg.lab[2],lty=leg.lty[2],col=leg.col[2],bty="n",xjust=0,lwd=leg.cex[2],cex=1.25,ncol=4)
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(2.5, 37, 0, 0), new = TRUE)
+    plot(2, 2, type = "n", bty = "n", xaxt = "n", yaxt = "n",xlab="",ylab="")
+    legend(x="bottom",leg.lab[3],lty=leg.lty[3],col=leg.col[3],bty="n",xjust=0,lwd=leg.cex[3],cex=1.25,ncol=4)
+   #
+    if(outtype=="pdf" || outtype=="tiff") dev.off() #if tiff or pdf then close graphics device FOR EACH loop
+    return(subGarc)
+}
+
+

@@ -1,0 +1,6 @@
+StockNum	Stock	EIS_StockName	RateType	Smsy	S85	Umsy	ERIS	ERIS_RunTiming	ERIS_StartAge	MRE_StartAge	MRE_TermAdjustment
+1	Queets Fall	QueetsFa	1	2500	2125	0.87	QUE	Fall	2	3	
+2	Hoh Fall	HohFall	1	1200	1020	0.9	QUE	Fall	2	3	
+3	Hoh Fall	HohFall	1	1200	1020	0.9	hoh	Fall	2	3	
+4	Quillayute Fall	QuillFall	1	3000	2550	0.87	QUE	Fall	2	3	
+5	Quillayute Fall	QuillFall	1	3000	2550	0.87	quillayute	Fall	2	3	

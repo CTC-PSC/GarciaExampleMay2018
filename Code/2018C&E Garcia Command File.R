@@ -32,30 +32,49 @@
 # Apply External HR Adjustment #
 # and Check Results            #
 ################################
- #SRH
+  #Nehalem
+  z.cy = externalHRadjustment(z.cy, hrt=hrt.nehalem, hrjstk="SRH", type=c("tm"), newstkname="nehalem")
+  Nehalem=cyer(hrj=subset(z.cy$HRJ_P,stock==58), esc=subset(z.cy$ESC_CY,stock==58), fmap=flookup, type="AEQTot", strays="separate")
+  Nehalem
+  summary(Nehalem)
+  #Siletz
+  z.cy = externalHRadjustment(z.cy, hrt=hrt.siletz, hrjstk="SRH", type=c("tm"), newstkname="siletz")
+  Siletz=cyer(hrj=subset(z.cy$HRJ_P,stock==59), esc=subset(z.cy$ESC_CY,stock==59), fmap=flookup, type="AEQTot", strays="separate")
+  Siletz
+  summary(Siletz)
+  #Siuslaw
+  z.cy = externalHRadjustment(z.cy, hrt=hrt.siuslaw, hrjstk="SRH", type=c("tm"), newstkname="siuslaw")
+  Siuslaw = cyer(hrj=subset(z.cy$HRJ_P,stock==60), esc=subset(z.cy$ESC_CY,stock==60), fmap=flookup, type="AEQTot", strays="separate")
+  Siuslaw
+  summary(Siuslaw)
+  #SRH
   stkloc = grep("SRH",z.cy$stknames)
   SRH = cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate")
   SRH
   summary(SRH)
- #Nehalem
-  z.cy = externalHRadjustment(z.cy, hrt=hrt.nehalem, hrjstk="SRH", type=c("tm"), newstkname="nehalem")
-  Nehalem=cyer(hrj=subset(z.cy$HRJ_P,stock==57), esc=subset(z.cy$ESC_CY,stock==57), fmap=flookup, type="AEQTot", strays="separate")
-  Nehalem
-  summary(Nehalem)
- #Siletz
-  z.cy = externalHRadjustment(z.cy, hrt=hrt.siletz, hrjstk="SRH", type=c("tm"), newstkname="siletz")
-  Siletz=cyer(hrj=subset(z.cy$HRJ_P,stock==58), esc=subset(z.cy$ESC_CY,stock==58), fmap=flookup, type="AEQTot", strays="separate")
-  Siletz
-  summary(Siletz)
- #Siuslaw
-  z.cy = externalHRadjustment(z.cy, hrt=hrt.siuslaw, hrjstk="SRH", type=c("tm"), newstkname="siuslaw")
-  Siuslaw = cyer(hrj=subset(z.cy$HRJ_P,stock==59), esc=subset(z.cy$ESC_CY,stock==59), fmap=flookup, type="AEQTot", strays="separate")
-  Siuslaw
-  summary(Siuslaw)
- #Generic stock CYER
-  stkloc = grep("LYF",z.cy$stknames)
-  cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate")
-
+  #WAC SPECIAL ADJUSTMENT COMMENT !!!!!!!READ ME READ ME READ ME!!!!!!!
+  #the hrt files specify that US terminal net & sport term HR's are equal to 0. This is not a 1:1 mapping, 
+  #simply meaning that the number of ERA are involved. I am not, at present, overwriting ERA results via the HRT file
+  #for all ERA fisheries involved b/c there's 0 harvest in these fisheries (and hence already equal to 0). 
+  #You will want to ALWAYS check and confirm this (see below code).
+  hrj=subset(z.cy$HRJ_P,stock==grep("QUE",z.cy$stknames))
+  with(hrj, tapply(AEQTot4, list(cy,fishery), sum))[,c(31,15,29,26,38,67,60,54,58,56,75,76)]
+  #Hoh
+  z.cy = externalHRadjustment(z.cy, hrt=hrt.hoh, hrjstk="QUE", type=c("tm"), newstkname="hoh")
+  Hoh = cyer(hrj=subset(z.cy$HRJ_P,stock==61), esc=subset(z.cy$ESC_CY,stock==61), fmap=flookup, type="AEQTot", strays="separate")
+  Hoh
+  summary(Hoh)
+  #Quillayute
+  z.cy = externalHRadjustment(z.cy, hrt=hrt.quillayute, hrjstk="QUE", type=c("tm"), newstkname="quillayute")
+  Quillayute = cyer(hrj=subset(z.cy$HRJ_P,stock==62), esc=subset(z.cy$ESC_CY,stock==62), fmap=flookup, type="AEQTot", strays="separate")
+  Quillayute
+  summary(Quillayute)
+  #QUE
+  stkloc = grep("QUE",z.cy$stknames)
+  QUE = cyer(hrj=subset(z.cy$HRJ_P,stock==stkloc), esc=subset(z.cy$ESC_CY,stock==stkloc), fmap=flookup, type="AEQTot", strays="separate")
+  QUE
+  summary(QUE)
+  
 ################
 #LYF for Larrie#
 ################
@@ -77,19 +96,29 @@
  #DATA MANIPULATION
   HRJ=convertHRJtoMRE(z.cy$HRJ_P , datatype="fishery")
   ESC=convertHRJtoMRE(z.cy$ESC_CY, datatype="escapement")
+  startagedf = merge(x=slookup, y=data.frame(stknum=1:length(z.cy$stknames),stknames=z.cy$stknames), by.x="ERIS", by.y="stknames")
  #MRE CALCS for all ERA stocks
-  MRE=calcMREAll(HRJ, ESC, flookup, "guess", "guess")
-
+  MRE=calcMREAll(HRJ=HRJ, ESC=ESC, fisheryinfotable=flookup, mre_startage=startagedf, eris_startage=startagedf)
+  
 ##################################
 # CREATE THE PLOT INPUT FILE,    #
 # WHICH APPLIES THE MRE CRITERIA #
 # AND CREATE THE FIGURES         #
 ##################################
-#Oregon Coastal Special
- garciaplotdata_orc = MRE2Plot(esc=Escap, mre=MRE, smap=slookup_orc, stknames=z.cy$stknames, mrecriteria=TRUE, auxdata=NULL)
- plotGarciaAll(Garcia=garciaplotdata_orc, outdir=outputDir, outtype="pdf", pdffilename="2018C&E Garcia Plots - Oregon Coast Special 8May2018.pdf")
-#2018MRE
- garciaplotdata = MRE2Plot(esc=Escap, mre=MRE, smap=slookup, stknames=z.cy$stknames, mrecriteria=TRUE, auxdata=AuxMRE)
- plotGarciaAll(Garcia=garciaplotdata, outdir=outputDir, outtype="pdf", pdffilename="2018C&E Garcia Plots - All Stocks 8May2018.pdf")
-#Write output as an excel file
- MRE2Excel(x=MRE, stknames=z.cy$stknames, filename="Results/2018ERA MRE Calcs 8May2018.xlsx")
+ #Oregon Coast Special
+  garciaplotdata_orc = MRE2Plot(esc=Escap, mre=MRE, smap=slookup_orc, stknames=z.cy$stknames, mrecriteria=TRUE, auxdata=NULL)
+  plotGarciaAll(Garcia=garciaplotdata_orc, outdir="Results/", outtype="pdf", pdffilename="2018C&E Garcia Plots - Oregon Coast Special.pdf")
+ #WAC Special
+  garciaplotdata_wac = MRE2Plot(esc=Escap, mre=MRE, smap=slookup_wac, stknames=z.cy$stknames, mrecriteria=TRUE, auxdata=NULL)
+  plotGarciaAll(Garcia=garciaplotdata_wac, outdir="Results/", outtype="pdf", pdffilename="2018C&E Garcia Plots - WAC Special.pdf")
+ #2018 C&E Garcia Plots
+  garciaplotdata = MRE2Plot(esc=Escap, mre=MRE, smap=slookup, stknames=z.cy$stknames, mrecriteria=TRUE, auxdata=AuxMRE)
+  plotGarciaAll(Garcia=garciaplotdata, outdir="Results/", outtype="pdf", pdffilename="2018C&E Garcia Plots - All Stocks.pdf")
+ #2018Synoptic Synoptic
+  odir=getwd()
+  setwd("Results/")
+  plotSynopticSynoptic(garcia=garciaplotdata, year=2016, outtype="tiff")
+  setwd(odir)
+ #Write output as an excel file
+  MRE2Excel(x=MRE, stknames=z.cy$stknames, filename="Results/2018ERA MRE Calcs.xlsx")
+  write.csv(garciaplotdata, "Results/2018ERA MRE Data Used for Figures.csv", row.names=FALSE)

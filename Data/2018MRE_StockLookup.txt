@@ -1,29 +1,29 @@
-StockNum	Stock	EIS_StockName	RateType	Smsy	S85	Umsy	ERIS	ERIS_RunTiming	ERIS_StartAge	MRE_StartAge	MRE_TermAdjustment
-1	Atnarko	Atnarko	1	5009	4257.65	0.768768	ATN	Summer	2	3	
-2	Alsek	Alsek	2	4677	2975	0.58137892	AlsekAux				
-3	Chickamin	Chickamin	1	2150	1827.5	0.7220958	ChickaminAux				
-4	Chilkat	Chilkat	2	1750	1487.5	0.399374157	ChilkatAux				
-5	Deschutes	Deschutes	1	4532	3852.2	0.615252	URB	Fall	2	3	
-6	Columbia LRW	Lewis	1	5791	4922.35	0.759118235	LRW	Fall	2	3	
-7	Col Sum	ColRSum	1	12143	10321.55	0.751743221	SUM	Summer	2	3	
-8	Columbia URB	ColRURB	1	40000	34000	0.5628	URB	Fall	2	3	
-9	Cowichan	Cowichan	1	6514	5536.9	0.690217	COW	Fall	2	3	
-10	Fraser Sp Nicola	Nicola12	1	8337	7086.45	0.593803583	NIC	Spring	2	4	
-11	Cowichan	FraserSum03	1	12339	10488.15	0.73442577	SHU	Summer	2	3	
-12	Green	Green	1	5800	4930	0.5	GRN	Fall	2	3	
-13	Harrison	Harrison	1	75072.3386	63811.48781	0.56764608	HAR	Fall	2	3	
-14	Hoh Fall	HohFall	1	1200	1020	0.9	QUE	Fall	2	3	
-15	Kitsumkalum	Kitsumkalum	1	8621	7327.85	0.60852048	KLM	Summer	3	4	
-16	Nanaimo	Nanaimo	1	2999	2549.15	0.786216519	NAN	Fall	2	3	
-17	Newhalem Fall	Nehalem	1	6989	5940.65	0.69211812	SRH	Fall	2	3	
-18	Queets Fall	QueetsFa	1	2500	2125	0.87	QUE	Fall	2	3	
-19	Quillayute Fall	QuillFall	1	3000	2550	0.87	QUE	Fall	2	3	
-20	Siletz Fall	Siletz	1	2944	2502.4	0.81144657	SRH	Fall	2	3	
-21	Situk	Situk	2	600	425	0.81008208	SitukAux				
-22	Siuslaw	Siuslaw	1	12925	10986.25	0.61441497	SRH	Fall	2	3	
-23	Skagit S/F	SkagitSF	1	14500	12325	0.5	SSF	Summer	2	3	
-24	Snohomish	Snohomish	1	4600	3910	0.5	STL	Summer	2	3	
-25	Stikine	Stikine	2	14000	11900	0.415250411	StikineAux				
-26	Stillaguamish	Stillaguamish	1	900	765	0.5	STL	Summer	2	3	
-27	Taku	Taku	2	19000	16150	0.5925	TakuAux				
-28	Unuk	Unuk	2	1800	1530	0.600630302	UnukAux				
+StockNum	Stock	EIS_StockName	RateType	Smsy	S85	Umsy	ERIS	ERIS_RunTiming	ERIS_StartAge	MRE_StartAge	MRE_TermAdjustment	EIS_Region	LowerGoal
+1	Atnarko	Atnarko	1	5009	4257.65	0.768768	ATN	Summer	2	3		Canada	NA
+2	Alsek	Alsek	2	4677	2975	0.58137892	AlsekAux					TBR	3500
+3	Chickamin	Chickamin	1	2150	1827.5	0.7220958	ChickaminAux					Alaska	2150
+4	Chilkat	Chilkat	2	2200	1487.5	0.399374157	ChilkatAux					Alaska	1750
+5	Deschutes	Deschutes	1	4532	3852.2	0.615252	URB	Fall	2	3		Columbia	NA
+6	Columbia LRW	Lewis	1	5791	4922.35	0.759118235	LRW	Fall	2	3		Columbia	NA
+7	Col Sum	ColRSum	1	12143	10321.55	0.751743221	SUM	Summer	2	3		Columbia	NA
+8	Columbia URB	ColRURB	1	40000	34000	0.5628	URB	Fall	2	3		Columbia	NA
+9	Cowichan	Cowichan	1	6514	5536.9	0.690217	COW	Fall	2	3		Canada	NA
+10	Fraser Sp Nicola	Nicola12	1	8337	7086.45	0.593803583	NIC	Spring	3	4		Canada	NA
+11	Cowichan	Shuswap04	1	12339	10488.15	0.73442577	SHU	Summer	2	3		Canada	NA
+12	Green	Green	1	5800	4930	0.5	GRN	Fall	2	3		WA/OR Coast	NA
+13	Harrison	Harrison	1	75072.3386	63811.48781	0.56764608	HAR	Fall	2	3		Canada	NA
+14	Hoh Fall	HohFall	1	1200	1020	0.9	QUE	Fall	2	3		WA/OR Coast	NA
+15	Kitsumkalum	Kitsumkalum	1	8621	7327.85	0.60852048	KLM	Summer	3	4		Canada	NA
+16	Nanaimo	Nanaimo	1	2999	2549.15	0.786216519	NAN	Fall	2	3		Canada	NA
+17	Newhalem Fall	Nehalem	1	6989	5940.65	0.69211812	SRH	Fall	2	3		WA/OR Coast	NA
+18	Queets Fall	QueetsFa	1	2500	2125	0.87	QUE	Fall	2	3		WA/OR Coast	NA
+19	Quillayute Fall	QuillFall	1	3000	2550	0.87	QUE	Fall	2	3		WA/OR Coast	NA
+20	Siletz Fall	Siletz	1	2944	2502.4	0.81144657	SRH	Fall	2	3		WA/OR Coast	NA
+21	Situk	Situk	2	600	425	0.81008208	SitukAux					Alaska	500
+22	Siuslaw	Siuslaw	1	12925	10986.25	0.61441497	SRH	Fall	2	3		WA/OR Coast	NA
+23	Skagit S/F	SkagitSF	1	14500	12325	0.5	SSF	Summer	2	3		WA/OR Coast	NA
+24	Snohomish	Snohomish	1	4600	3910	0.5	STL	Summer	2	3		WA/OR Coast	NA
+25	Stikine	Stikine	2	17400	11900	0.415250411	StikineAux					TBR	14000
+26	Stillaguamish	Stillaguamish	1	900	765	0.5	STL	Summer	2	3		WA/OR Coast	NA
+27	Taku	Taku	2	19000	16150	0.5925	TakuAux					TBR	19000
+28	Unuk	Unuk	2	2764	1530	0.600630302	UnukAux					Alaska	1800
